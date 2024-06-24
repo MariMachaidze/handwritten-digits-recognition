@@ -32,12 +32,29 @@ model.fit(x_train, y_train, epochs=3)
 
 model.export('handwritten.model')
 
-'''
+
 # load the model
 
-model = tf.keras.layers.TFSMLayer('handwritten.model', call_endpoint='serving_default')
-'''
+# model = tf.keras.layers.TFSMLayer('handwritten.model', call_endpoint='serving_default')
+# model = tf.keras.models.load_model('handwritten.model')
+
 loss, accuracy = model.evaluate(x_test, y_test)
 print("loss and accuracy:  ")
 print(loss)
 print(accuracy)
+
+image_number = 4
+while os.path.isfile(f"digits/{image_number}.png"):
+    try:    
+        img = cv2.imread(f"digits/{image_number}.png")[:,:,0]
+        img = np.invert(np.array([img]))
+        prediction = model.predict(img)
+        print(f"this digit is probably a {np.argmax(prediction)}")
+        plt.imshow(img[0], cmap=plt.cm.binary)
+        plt.show()
+    except:
+        print("Error!")
+    finally:
+        image_number += 1
+
+
